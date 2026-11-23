@@ -1,0 +1,30 @@
+{
+	admin off
+	auto_https off
+	persist_config off
+}
+
+:{$PORT:8080} {
+	log {
+		output stdout
+		level INFO
+	}
+
+	route {
+		# Railway health check: no login needed.
+		respond /healthz "ok" 200
+
+		# Upstream's /api/list returns the id of every shared workbook. The web app
+		# never calls it, so it stays closed.
+		respond /api/list 404
+
+		# Basic auth when IRONCALC_PASSWORD is set (written by the start script).
+		import /tmp/caddy/auth.caddy
+
+		reverse_proxy /api/* 127.0.0.1:8000
+
+		root * /srv
+		try_files {path} /index.html
+		file_server
+	}
+}

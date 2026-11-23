@@ -1,0 +1,3 @@
+# Shared workbooks are stored here. /data is the Railway volume.
+[default.databases.ironcalc]
+url = "/data/ironcalc.sqlite"
